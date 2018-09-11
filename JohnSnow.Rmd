@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+install.packages("ggplot2")
+install.packages("ggmap")
 ```
 
 ## R Markdown
@@ -17,6 +19,14 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 summary(cars)
+```
+
+
+Getting a Map object.
+```{r}
+ggmap::geocode("houston")
+test <- ggmap::get_map(location = c(lon = 6.175754, lat = 49.120063 ), zoom = 14)
+ggmap::ggmap(test)
 ```
 
 ## Including Plots
