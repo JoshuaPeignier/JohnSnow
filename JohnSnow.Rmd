@@ -7,12 +7,16 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-install.packages("ggplot2")
-install.packages("ggmap")
+#install.packages("ggplot2")
+#install.packages("ggmap")
 #install.packages("sf")
 #install.packages("rgda1")
+install.packages("mapstool")
 library(ggplot2)
 library(ggmap)
+library(maptools)
+#library(sf)
+#library(rgda1)
 #require(sf)
 #require(rgda1)
 ```
@@ -22,14 +26,16 @@ library(ggmap)
 
 ##Getting a Map object.
 ```{r}
-test <- ggmap::get_map(location = c(lon = 6.175754, lat = 49.120063 ), zoom = 13, maptype="watercolor")
+test <- ggmap::get_stamenmap(bbox = c(left = 6.15, bottom = 49.10, right =
+  6.20, top = 49.15), zoom = 14, maptype="watercolor")
+#test <- ggmap::get_map(location = c(lon = 6.175754, lat = 49.120063 ), zoom = 13, maptype="watercolor")
 ggmap::ggmap(test)
 ```
 
 
 ##Getting the data from the shapefiles
 ```{r}
-#shape <- read_sf(dsn = ".", layer = "Cholera_Deaths.shp")
+shape <- sf::read_sf(dsn = ".", layer = "Cholera_Deaths.shp")
 ```
 
 ## Including Plots
