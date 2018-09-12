@@ -7,10 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#install.packages("ggplot2")
-#install.packages("ggmap")
+install.packages("ggplot2")
+install.packages("ggmap")
+#install.packages("sf")
+#install.packages("rgda1")
 library(ggplot2)
 library(ggmap)
+#require(sf)
+#require(rgda1)
 ```
 
 ## R Markdown
@@ -18,9 +22,14 @@ library(ggmap)
 
 ##Getting a Map object.
 ```{r}
-ggmap::geocode("houston")
-test <- ggmap::get_map(location = c(lon = 6.175754, lat = 49.120063 ), zoom = 13)
+test <- ggmap::get_map(location = c(lon = 6.175754, lat = 49.120063 ), zoom = 13, maptype="watercolor")
 ggmap::ggmap(test)
+```
+
+
+##Getting the data from the shapefiles
+```{r}
+#shape <- read_sf(dsn = ".", layer = "Cholera_Deaths.shp")
 ```
 
 ## Including Plots
