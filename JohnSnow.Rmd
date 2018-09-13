@@ -22,24 +22,26 @@ library(readxl)
 library(raster)
 ```
 
-## R Markdown
-
 ##Getting the data from the shapefiles
+First, unzip the data
 ```{r}
 unzip('SnowGIS_SHP.zip')
-deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
-deaths_f <- fortify(deaths@data)
-deaths_f$Count <- as.numeric(as.character(deaths$Count)) #Converts the Count column to double
-deaths_f$Id <- NULL #Deletes Id column
-data_f <- as.data.frame(deaths@coords) #Creates an array with coordinates and counts of deaths
-data_f$Count <- deaths$Count
+```
 
+Then get the number of deaths and their position
+```{r}
+raw_deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
+deaths <- as.data.frame(raw_deaths@coords) #Creates an array with coordinates and counts of deaths
+deaths$count <- raw_deaths$Count
+```
+Then the position of pumps
+```{r}
+raw_pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
+pumps <- as.data.frame(raw_pumps@coords)
+```
 
-pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
-pumps_f <- fortify(pumps@data)
-pumps_test <- as.data.frame(pumps@coords)
-
-
+Finally plot everything. The map is taken from an image.
+```{r}
 rel <- raster("SnowGIS_SHP/OSMap.tif")
 rel_spdf <- as(rel, "SpatialPixelsDataFrame")
 rel <- as.data.frame(rel_spdf)
@@ -47,14 +49,10 @@ rel <- subset(rel, x > 529150 & x < 529800 & y > 180625 & y < 181375)
 
 ggplot() +
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
-  scale_alpha(name = "", range = c(0.6, 0), guide = F) +
-  scale_colour_gradient(low = "#FF9020", high = "red") +
-  geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, size = Count, alpha = Count)) +
-  geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1)
-
-
-
-
+  scale_alpha(name = "", range = c(0.9, 0.1), guide = F) +
+  scale_colour_gradient(low = "#DDCC00", high = "red") +
+  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.8) +
+  geom_point(data = deaths, aes(x = coords.x1, y = coords.x2, colour = count), size = 1) +
+  geom_point(data = pumps, aes(x = coords.x1, y = coords.x2), colour = "black", size = 2)
 ```
-
 
