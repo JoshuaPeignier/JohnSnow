@@ -51,7 +51,8 @@ ggplot() +
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
   scale_alpha(name = "", range = c(0.9, 0.1), guide = F) +
   scale_colour_gradient(low = "#DDCC00", high = "red") +
-  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.8) +
+  scale_fill_gradient(low = "#DDCC00", high = "red") +
+  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.3) +
   geom_point(data = deaths, aes(x = coords.x1, y = coords.x2, colour = count), size = 1) +
   geom_point(data = pumps, aes(x = coords.x1, y = coords.x2), colour = "black", size = 2)
 ```
