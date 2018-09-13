@@ -41,7 +41,8 @@ pumps <- as.data.frame(raw_pumps@coords)
 ```
 
 Finally plot everything. The map is taken from an image.
-```{r}
+We make a 2D histogram as well as plotting for the deaths. Pumps are left as black dots.
+```{r echo=TRUE}
 rel <- raster("SnowGIS_SHP/OSMap.tif")
 rel_spdf <- as(rel, "SpatialPixelsDataFrame")
 rel <- as.data.frame(rel_spdf)
@@ -52,7 +53,7 @@ ggplot() +
   scale_alpha(name = "", range = c(0.9, 0.1), guide = F) +
   scale_colour_gradient(low = "#DDCC00", high = "red") +
   scale_fill_gradient(low = "#DDCC00", high = "red") +
-  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.3) +
+  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.3, show.legend = FALSE) +
   geom_point(data = deaths, aes(x = coords.x1, y = coords.x2, colour = count), size = 1) +
   geom_point(data = pumps, aes(x = coords.x1, y = coords.x2), colour = "black", size = 2)
 ```
