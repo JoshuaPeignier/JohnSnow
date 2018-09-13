@@ -49,7 +49,9 @@ pumps_f <- fortify(pumps@data)
 #deaths_f$Id <- as.numeric(as.character(deaths$Id)) #Converts the Id column to double
 #deaths_f$Id <- NULL #Deletes Id column
 
-#data_f <- merge(deaths@coords, deaths_f) #Creates an array with coordinates and counts of deaths
+data_f <- as.data.frame(deaths@coords) #Creates an array with coordinates and counts of deaths
+data_f$Count <- deaths$Count
+
 #lol <- pairs(data_f$coords.x1, data_f$coords.x2)
 #data_f$Coords <- c(data_f$coords.x1, data_f$coords.x2)
 data_test <- as.data.frame(deaths@coords)
