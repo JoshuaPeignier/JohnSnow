@@ -40,12 +40,12 @@ deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
 deaths_f <- fortify(deaths@data)
 deaths_f$Count <- as.numeric(as.character(deaths$Count)) #Converts the Count column to double
 #deaths_f$Id <- as.numeric(as.character(deaths$Id)) #Converts the Id column to double
-deaths_f$Id <- NULL #Deletes the Id column
+deaths_f$Id <- NULL #Deletes Id column
 
-data_f <- merge(deaths@coords, deaths_f) #Creates an array with coordinates and counts of deaths
-lol <- pairs(data_f$coords.x1, data_f$coords.x2)
+#data_f <- merge(deaths@coords, deaths_f) #Creates an array with coordinates and counts of deaths
+#lol <- pairs(data_f$coords.x1, data_f$coords.x2)
 #data_f$Coords <- c(data_f$coords.x1, data_f$coords.x2)
-
+data_test <- as.data.frame(deaths@coords)
 
 rel <- raster("SnowGIS_SHP/OSMap.tif")
 #plot(rel)
@@ -58,8 +58,8 @@ ggplot() +
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
   scale_alpha(name = "", range = c(0.6, 0), guide = F) +
   #Comment both following lines and uncomment first line of this block to only plot the map
-  geom_count(data = deaths_f, aes(x = "x", y = "y"), colour = "black", size = 3) +
-  #geom_point(data = deaths_f, aes(x = "x", y = "y"), colour = "black", size = 3)
+  #geom_count(data = data_f, aes(x = "coords.x1", y = "coords.x2"), colour = "black", size = 3) +
+  geom_point(data = data_test, aes(x = "x", y = "y"), colour = "black", size = 3)
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()) +
