@@ -38,10 +38,13 @@ ggmap::ggmap(test)
 unzip('SnowGIS_SHP.zip')
 deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
 deaths_f <- fortify(deaths@data)
-deaths_f$Count <- as.numeric(as.character(deaths$Count))
-deaths_f$Id <- as.numeric(as.character(deaths$Id))
+deaths_f$Count <- as.numeric(as.character(deaths$Count)) #Converts the Count column to double
+#deaths_f$Id <- as.numeric(as.character(deaths$Id)) #Converts the Id column to double
+deaths_f$Id <- NULL #Deletes the Id column
 
-
+data_f <- merge(deaths@coords, deaths_f) #Creates an array with coordinates and counts of deaths
+lol <- pairs(data_f$coords.x1, data_f$coords.x2)
+#data_f$Coords <- c(data_f$coords.x1, data_f$coords.x2)
 
 
 rel <- raster("SnowGIS_SHP/OSMap.tif")
