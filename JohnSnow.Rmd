@@ -22,62 +22,41 @@ library(readxl)
 library(raster)
 ```
 
-## R Markdown
-
-
-##Getting a Map object.
-```{r}
-#test <- ggmap::get_stamenmap(bbox = c(left = 6.15, bottom = 49.10, right = 6.20, top = 49.15), zoom = 14, maptype="watercolor")
-test <- ggmap::get_stamenmap(bbox = c(left = 6.15, bottom = 49.10, right = 6.20, top = 49.15), zoom = 14, maptype="watercolor")
-ggmap::ggmap(test)
-```
-
-
 ##Getting the data from the shapefiles
+First, unzip the data
 ```{r}
 unzip('SnowGIS_SHP.zip')
+```
+
+Then get the number of deaths and their position
+```{r}
 deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
-deaths_f <- fortify(deaths@data)
-deaths_f$Count <- as.numeric(as.character(deaths$Count)) #Converts the Count column to double
-#deaths_f$Id <- as.numeric(as.character(deaths$Id)) #Converts the Id column to double
-deaths_f$Id <- NULL #Deletes Id column
-
-
-pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
-pumps_f <- fortify(pumps@data)
-#deaths_f$Count <- as.numeric(as.character(deaths$Count)) #Converts the Count column to double
-#deaths_f$Id <- as.numeric(as.character(deaths$Id)) #Converts the Id column to double
-#deaths_f$Id <- NULL #Deletes Id column
-
 data_f <- as.data.frame(deaths@coords) #Creates an array with coordinates and counts of deaths
 data_f$Count <- deaths$Count
+```
 
-#lol <- pairs(data_f$coords.x1, data_f$coords.x2)
-#data_f$Coords <- c(data_f$coords.x1, data_f$coords.x2)
-data_test <- as.data.frame(deaths@coords)
+Then the position of pumps
+```{r}
+pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
+pumps_f <- fortify(pumps@data)
+
+
 pumps_test <- as.data.frame(pumps@coords)
+```
 
-
+Finally plot everything. The map is taken from an image.
+```{r}
 rel <- raster("SnowGIS_SHP/OSMap.tif")
-#plot(rel)
 rel_spdf <- as(rel, "SpatialPixelsDataFrame")
 rel <- as.data.frame(rel_spdf)
 
 
 ggplot() +
-  #Comment next line to only plot the points
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
-  scale_alpha(name = "", range = c(0.6, 0), guide = F) +
-  scale_colour_gradient(low = "#AAAA00", high = "red") +
-  #Comment both following lines and uncomment first line of this block to only plot the map
-  #geom_count(data = data_f, aes(x = "coords.x1", y = "coords.x2"), colour = "black", size = 1) +
-  #geom_point(data = data_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1) +
+  scale_alpha(name = "", range = c(0.9, 0.1), guide = F) +
+  scale_colour_gradient(low = "#DDCC00", high = "red") +
   geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, colour = Count), size = 0.35) +
   geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1)
-
-
-
-
 ```
 
 
