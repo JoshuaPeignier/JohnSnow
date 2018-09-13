@@ -34,6 +34,7 @@ deaths_f$Id <- NULL #Deletes Id column
 data_f <- as.data.frame(deaths@coords) #Creates an array with coordinates and counts of deaths
 data_f$Count <- deaths$Count
 
+
 pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
 pumps_f <- fortify(pumps@data)
 pumps_test <- as.data.frame(pumps@coords)
@@ -48,7 +49,7 @@ ggplot() +
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
   scale_alpha(name = "", range = c(0.6, 0), guide = F) +
   scale_colour_gradient(low = "#FF9020", high = "red") +
-  geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, colour = Count), size = 0.35) +
+  geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, colour = Count, size = Count)) +
   geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1)
 
 
@@ -57,5 +58,3 @@ ggplot() +
 ```
 
 
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
