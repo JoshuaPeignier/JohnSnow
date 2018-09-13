@@ -68,10 +68,12 @@ ggplot() +
   #Comment next line to only plot the points
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
   scale_alpha(name = "", range = c(0.6, 0), guide = F) +
+  scale_colour_gradient(low = "#AAAA00", high = "red") +
   #Comment both following lines and uncomment first line of this block to only plot the map
   #geom_count(data = data_f, aes(x = "coords.x1", y = "coords.x2"), colour = "black", size = 1) +
-  geom_point(data = data_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1) +
-  geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "red", size = 1)
+  #geom_point(data = data_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1) +
+  geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, colour = Count), size = 0.35) +
+  geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1)
 
 
 
