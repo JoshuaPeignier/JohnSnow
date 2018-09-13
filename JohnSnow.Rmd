@@ -30,18 +30,14 @@ unzip('SnowGIS_SHP.zip')
 
 Then get the number of deaths and their position
 ```{r}
-deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
-data_f <- as.data.frame(deaths@coords) #Creates an array with coordinates and counts of deaths
-data_f$Count <- deaths$Count
+raw_deaths <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Cholera_Deaths")
+deaths <- as.data.frame(raw_deaths@coords) #Creates an array with coordinates and counts of deaths
+deaths$count <- raw_deaths$Count
 ```
-
 Then the position of pumps
 ```{r}
-pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
-pumps_f <- fortify(pumps@data)
-
-
-pumps_test <- as.data.frame(pumps@coords)
+raw_pumps <- rgdal::readOGR(dsn = "SnowGIS_SHP/", layer = "Pumps")
+pumps <- as.data.frame(raw_pumps@coords)
 ```
 
 Finally plot everything. The map is taken from an image.
@@ -49,16 +45,14 @@ Finally plot everything. The map is taken from an image.
 rel <- raster("SnowGIS_SHP/OSMap.tif")
 rel_spdf <- as(rel, "SpatialPixelsDataFrame")
 rel <- as.data.frame(rel_spdf)
-
+rel <- subset(rel, x > 529150 & x < 529800 & y > 180625 & y < 181375)
 
 ggplot() +
   geom_raster(data = rel, aes_string(x = "x", y = "y", alpha = "OSMap")) +
   scale_alpha(name = "", range = c(0.9, 0.1), guide = F) +
   scale_colour_gradient(low = "#DDCC00", high = "red") +
-  geom_point(data = data_f, aes(x = coords.x1, y = coords.x2, colour = Count), size = 0.35) +
-  geom_point(data = pumps_test, aes(x = coords.x1, y = coords.x2), colour = "black", size = 1)
+  geom_bin2d(data = deaths, aes(x = coords.x1, y = coords.x2), binswidth = c(500, 500), alpha = 0.8) +
+  geom_point(data = deaths, aes(x = coords.x1, y = coords.x2, colour = count), size = 1) +
+  geom_point(data = pumps, aes(x = coords.x1, y = coords.x2), colour = "black", size = 2)
 ```
 
-
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
